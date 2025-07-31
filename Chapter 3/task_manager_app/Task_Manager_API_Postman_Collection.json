@@ -1,0 +1,666 @@
+{
+  "info": {
+    "name": "Task Manager API",
+    "description": "Complete collection for testing the Task Manager FastAPI application including all endpoints and edge cases",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Tasks",
+      "item": [
+        {
+          "name": "Get All Tasks",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Retrieve all tasks from the system"
+          }
+        },
+        {
+          "name": "Get All Tasks (Empty Database)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Test when no tasks exist - should return empty array []"
+          }
+        },
+        {
+          "name": "Get Task by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/1",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "1"]
+            },
+            "description": "Retrieve a specific task by its ID"
+          }
+        },
+        {
+          "name": "Get Non-Existent Task",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/999999",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "999999"]
+            },
+            "description": "Test with non-existent ID - should return 404"
+          }
+        },
+        {
+          "name": "Create Task (Valid)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Complete project documentation\",\n  \"description\": \"Write comprehensive API documentation\",\n  \"completed\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Create a new task with all fields"
+          }
+        },
+        {
+          "name": "Create Task (Minimal)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Quick task\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Create task with only required field (title)"
+          }
+        },
+        {
+          "name": "Update Task (Full)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated task title\",\n  \"description\": \"Updated description\",\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/1",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "1"]
+            },
+            "description": "Update all fields of an existing task"
+          }
+        },
+        {
+          "name": "Update Task (Partial)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Only updating title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/1",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "1"]
+            },
+            "description": "Update only the title field"
+          }
+        },
+        {
+          "name": "Delete Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/1",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "1"]
+            },
+            "description": "Delete an existing task"
+          }
+        },
+        {
+          "name": "Delete Non-Existent Task",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/999999",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "999999"]
+            },
+            "description": "Attempt to delete non-existent task - should return 404"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Edge Cases - Invalid IDs",
+      "item": [
+        {
+          "name": "Get Task - String ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/abc",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "abc"]
+            },
+            "description": "Should return 422 validation error"
+          }
+        },
+        {
+          "name": "Get Task - Float ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/1.5",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "1.5"]
+            },
+            "description": "Should return 422 validation error"
+          }
+        },
+        {
+          "name": "Get Task - Negative ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/-1",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "-1"]
+            },
+            "description": "Should return 404 not found"
+          }
+        },
+        {
+          "name": "Get Task - Zero ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/0",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "0"]
+            },
+            "description": "Should return 404 not found"
+          }
+        },
+        {
+          "name": "Get Task - Special Characters",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks/@#$%",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "@#$%"]
+            },
+            "description": "Should return 422 validation error"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Edge Cases - Invalid Data",
+      "item": [
+        {
+          "name": "Create Task - Missing Title",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Task without title\",\n  \"completed\": false\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Should return 422 - title is required"
+          }
+        },
+        {
+          "name": "Create Task - Empty Body",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Should return 422 - title is required"
+          }
+        },
+        {
+          "name": "Create Task - Null Title",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": null,\n  \"description\": \"Test null title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Should return 422 - title cannot be null"
+          }
+        },
+        {
+          "name": "Create Task - Wrong Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": 123,\n  \"description\": true,\n  \"completed\": \"yes\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Should return 422 - wrong data types"
+          }
+        },
+        {
+          "name": "Create Task - Extra Fields",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Task with extras\",\n  \"description\": \"Normal description\",\n  \"completed\": false,\n  \"priority\": \"high\",\n  \"tags\": [\"urgent\", \"important\"],\n  \"extra_field\": \"should be ignored\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Extra fields should be ignored"
+          }
+        },
+        {
+          "name": "Create Task - Empty String Title",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"\",\n  \"description\": \"Empty title test\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Test with empty string as title"
+          }
+        },
+        {
+          "name": "Create Task - Special Characters",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Task with special chars: @#$%^&*()_+={[}]|\\\\:;\\\"'<,>.?/~`\",\n  \"description\": \"Testing unicode: 你好世界 🌍 émojis 🎉\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Test special characters and unicode"
+          }
+        },
+        {
+          "name": "Create Task - Very Long Text",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. This title is intentionally very long to test the system's handling of lengthy text inputs.\",\n  \"description\": \"Similarly, this description contains an extensive amount of text to verify that the API can handle large payloads without issues. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Test with very long text fields"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Edge Cases - Malformed Requests",
+      "item": [
+        {
+          "name": "Invalid JSON",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"Missing closing brace\""
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Malformed JSON - should return 422"
+          }
+        },
+        {
+          "name": "Wrong Content Type",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "text/plain"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\"title\": \"Task with wrong content type\"}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Wrong content type header"
+          }
+        },
+        {
+          "name": "Form Data Instead of JSON",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "title",
+                  "value": "Task as form data",
+                  "type": "text"
+                },
+                {
+                  "key": "description",
+                  "value": "This should fail",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Sending form data instead of JSON"
+          }
+        },
+        {
+          "name": "Array Instead of Object",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "[\"title\", \"description\"]"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Sending array instead of object"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Update Edge Cases",
+      "item": [
+        {
+          "name": "Update Non-Existent Task",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updating ghost task\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/999999",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "999999"]
+            },
+            "description": "Should return 404"
+          }
+        },
+        {
+          "name": "Update - Missing Title",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Only description\",\n  \"completed\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/1",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "1"]
+            },
+            "description": "Should return 422 - title is required for updates"
+          }
+        },
+        {
+          "name": "Update - Invalid ID Format",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Valid title\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks/not-a-number",
+              "host": ["{{base_url}}"],
+              "path": ["tasks", "not-a-number"]
+            },
+            "description": "Should return 422 validation error"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Performance Tests",
+      "item": [
+        {
+          "name": "Create Many Tasks",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Performance test task {{$randomInt}}\",\n  \"description\": \"Created at {{$timestamp}}\",\n  \"completed\": {{$randomBoolean}}\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Run this multiple times to test ID generation"
+          }
+        },
+        {
+          "name": "Get All Tasks (Large Dataset)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/tasks",
+              "host": ["{{base_url}}"],
+              "path": ["tasks"]
+            },
+            "description": "Test performance with many tasks"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Root Endpoint",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            },
+            "description": "Check if API is running"
+          }
+        }
+      ]
+    }
+  ]
+}
