@@ -1,6 +1,6 @@
 import csv
 from typing import List, Optional
-from models import Task, TaskWithId
+from models import Task, TaskWithId, TaskV2, TaskV2WithId
 
 DATABASE_FILENAME = 'tasks.csv'
 columns = ['id', 'title', 'description', 'status']
@@ -86,3 +86,16 @@ def delete_task(task_id: int) -> bool:
         for task in tasks:
             writer.writerow(task.model_dump())
     return len(tasks) < len(tasks)
+
+def read_all_tasks_v2() -> List[TaskV2WithId]:
+    tasks = []
+    try:
+        with open(DATABASE_FILENAME, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                row['id'] = int(row['id'])  # Convert id to int
+                task = TaskV2WithId(**row)
+                tasks.append(task)
+    except FileNotFoundError:
+        pass  # If the file does not exist, return an empty list
+    return tasks
