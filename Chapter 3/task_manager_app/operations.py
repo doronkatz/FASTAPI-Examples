@@ -37,11 +37,17 @@ def get_next_id():
 
 '''Create new task'''
 def create_task(task: Task) -> TaskWithId:
-    task_id = get_next_id()
-    task_with_id = TaskWithId(id=task_id, **task.dict())
-    with open(DATABASE_FILENAME, mode='a', newline='') as file:
-        writer = csv.DictWriter(file, fieldnames=columns)
-        writer.writerow(task_with_id.dict())
+    tasks = read_all_tasks()
+    task_id = task.id if task.id is not None else max((t.id for t in tasks), default=0) + 1
+    task_with_id = TaskWithId(id=task_id, **task.dict(exclude={"id"}))
+    tasks.append(task_with_id)
+
+    with open(DATABASE_FILENAME, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=['id', 'title', 'description', 'status'])
+        writer.writeheader()
+        for t in tasks:
+            writer.writerow(t.model_dump())
+
     return task_with_id
 
 '''Update existing task'''
